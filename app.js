@@ -3,11 +3,25 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const { Sequelize } = require('sequelize');
+require("dotenv").config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+// connect to db
+const {DB_USERNAME, DB_PASSWORD, DB_HOSTNAME, DB_PORT, DB_NAME} = process.env;
+
+const sequelize = new Sequelize(`postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`);
+
+sequelize
+.authenticate()
+.then(()=> console.log("Successfullly connected to database"))
+.catch((err)=> console.log("unable to connect to database", err));
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
